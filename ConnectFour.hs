@@ -120,58 +120,6 @@ twoPlayer board player
     where winner = checkWinner board
 
 
--- CODE BELOW NOT WORKING --
--- Trying to make a minimax AI
-value :: Char -> [[Char]] -> Int
-value player board
-    | w == 'X' = 1
-    | w == 'O' = -1
-    | w == '-' = 0
-    | player == 'X' = maximum [value 'O' (play x y 'X' board) | x <- [0..6], (valid, y) <- [(checkPlay board x ((length board)-1))], valid==True]
-    | otherwise = minimum [value 'X' (play x y 'O' board) | x <- [0..6], (valid, y) <- [(checkPlay board x ((length board)-1))], valid==True]
-    where w = checkWinner board
-
-
-bestOf :: [[[Char]]] -> [[Char]]
-bestOf [x] = x
-bestOf (x:xs)
-    | value 'O' x > value 'O' (bestOf xs) = x
-    | otherwise = bestOf xs 
-
-
-bestMove :: [[Char]] -> [[Char]]
-bestMove board = bestOf [play x y 'X' board | x <- [0..6], (valid, y) <- [(checkPlay board x ((length board)-1))], valid==True]
-
-
-onePlayer :: [[Char]] -> Char -> IO()
-onePlayer board player
-    | winner == '-' = putStrLn ((showBoard board) ++ "\nIt's a tie!")
-    | winner /= '?' = putStrLn ((showBoard board) ++ "\n" ++ [winner] ++ " wins the game!")
-    | player == 'X' = onePlayer (bestMove board) 'O'
-    | otherwise = do
-        putStrLn (showBoard board)
-        putStr "Enter a column to play: "
-        hFlush stdout
-        input <- getLine
-        let 
-            x = (read input::Int)
-            (valid, y) = checkPlay board x ((length board)-1)
-        if valid then
-            let board2 = (play x y 'O' board)
-            in onePlayer board2 'X'
-        else do
-            putStrLn "\nSpace already taken!"
-            onePlayer board 'O'
-    where winner = checkWinner board
-
-
--- Used to debug the possible moves the algorithm is trying to make
-showMany (x:xs) 
-    | x == [] = ""
-    | otherwise = (showBoard x) ++ "\n\n" ++ showMany xs
---END OF UNUSED CODE--
-
-
 emptyBoard = [
     ".......",
     ".......",
