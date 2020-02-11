@@ -73,6 +73,10 @@ checkWinner board =
 -- Given a column, returns if the player can play, and if so, at which y position
 checkPlay :: [[Char]] -> Int -> Int -> (Bool, Int)
 checkPlay board x y
+    -- If x is too big, return False
+    | x > length board = (False, -1)
+    -- If x is less than zero, return False
+    | x < 0 = (False, -1)
     -- If y is 0 (the top of the board), return if the space is free
     | y == 0 = (board!!y!!x == '.', 0)
     -- If the space being checked is empty (marked by a '.'), return the move as valid and the y value of the free space
